@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:PokeDexAkash.ViewModels"
+             xmlns:controls="clr-namespace:PokeDexAkash.Controls"
+             x:Class="PokeDexAkash.Pages.MainPage"
+             x:DataType="vm:MainViewModel"
+             Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto,*">
+
+        <!-- Header -->
+        <Grid Grid.Row="0" Padding="20,14,20,6" ColumnDefinitions="*,Auto,Auto" ColumnSpacing="10">
+            <VerticalStackLayout x:Name="TitleBlock">
+                <Label Text="Pokédex" Style="{StaticResource Heading}" />
+                <Label Text="{Binding Subtitle}" Style="{StaticResource Muted}" />
+            </VerticalStackLayout>
+
+            <Border x:Name="ShinyButton" Grid.Column="1" WidthRequest="46" HeightRequest="46"
+                    StrokeShape="RoundRectangle 23" BackgroundColor="{StaticResource SurfaceHigh}">
+                <Label Text="{Binding ShinyGlyph}" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center" />
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding ToggleShinyCommand}" Tapped="OnButtonTapped" />
+                </Border.GestureRecognizers>
+            </Border>
+
+            <Border x:Name="FilterButton" Grid.Column="2" WidthRequest="46" HeightRequest="46"
+                    StrokeShape="RoundRectangle 23" BackgroundColor="{StaticResource SurfaceHigh}">
+                <Label Text="⚙️" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center" />
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding ToggleFiltersCommand}" Tapped="OnButtonTapped" />
+                </Border.GestureRecognizers>
+            </Border>
+        </Grid>
+
+        <!-- Search -->
+        <Border Grid.Row="1" Margin="20,6,20,10" Padding="16,0,6,0"
+                StrokeShape="RoundRectangle 26" BackgroundColor="{StaticResource Surface}">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <Label Text="🔍" VerticalOptions="Center" FontSize="16" />
+                <Entry Grid.Column="1" Text="{Binding SearchText}"
+                       Placeholder="Search name, #number or type"
+                       ClearButtonVisibility="Never"
+                       FontSize="15" HeightRequest="50" Margin="8,0,0,0" />
+                <Label Grid.Column="2" Text="✕" FontSize="16" Padding="14"
+                       VerticalOptions="Center"
+                       TextColor="{StaticResource TextMuted}"
+                       IsVisible="{Binding HasSearch}">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ClearSearchCommand}" />
+                    </Label.GestureRecognizers>
+                </Label>
+            </Grid>
+        </Border>
+
+        <!-- Type chips -->
+        <ScrollView Grid.Row="2" Orientation="Horizontal" HorizontalScrollBarVisibility="Never" Margin="0,0,0,4">
+            <HorizontalStackLayout Padding="20,0,12,0"
+                                   BindableLayout.ItemsSource="{Binding TypeChips}">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="vm:ChipVM">
+                        <controls:ChipView />
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </HorizontalStackLayout>
+        </ScrollView>
+
+        <!-- Extra filters (generation / sort) -->
+        <Border x:Name="FilterPanel" Grid.Row="3" IsVisible="{Binding FiltersOpen}"
+                Margin="20,4,20,6" Padding="16,14,16,6"
+                StrokeShape="RoundRectangle 22" BackgroundColor="{StaticResource Surface}">
+            <VerticalStackLayout Spacing="6">
+                <Label Text="GENERATION" Style="{StaticResource Muted}" CharacterSpacing="1.5" />
+                <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never">
+                    <HorizontalStackLayout BindableLayout.ItemsSource="{Binding GenChips}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="vm:ChipVM">
+                                <controls:ChipView />
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </HorizontalStackLayout>
+                </ScrollView>
+                <Label Text="SORT BY" Style="{StaticResource Muted}" CharacterSpacing="1.5" />
+                <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never">
+                    <HorizontalStackLayout BindableLayout.ItemsSource="{Binding SortChips}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="vm:ChipVM">
+                                <controls:ChipView />
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </HorizontalStackLayout>
+                </ScrollView>
+            </VerticalStackLayout>
+        </Border>
+
+        <!-- Grid of Pokémon -->
+        <RefreshView Grid.Row="4"
+                     Command="{Binding RefreshCommand}"
+                     IsRefreshing="{Binding IsRefreshing}"
+                     RefreshColor="{StaticResource Accent}"
+                     BackgroundColor="{StaticResource Surface}">
+            <CollectionView x:Name="List"
+                            ItemsSource="{Binding Items}"
+                            ItemSizingStrategy="MeasureFirstItem"
+                            Margin="8,0">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical" Span="2" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="vm:PokemonCardVM">
+                        <controls:PokemonCard />
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout Padding="40,80" Spacing="10" HorizontalOptions="Center">
+                        <Label Text="🔍" FontSize="52" HorizontalOptions="Center" />
+                        <Label Text="No Pokémon match" FontFamily="OpenSansSemibold" FontSize="18" HorizontalOptions="Center" />
+                        <Label Text="Try a different name, number, type or generation."
+                               Style="{StaticResource Muted}" HorizontalTextAlignment="Center" />
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+                <CollectionView.Footer>
+                    <BoxView HeightRequest="12" Color="Transparent" />
+                </CollectionView.Footer>
+            </CollectionView>
+        </RefreshView>
+
+        <!-- Snackbar -->
+        <Border Grid.Row="4" x:Name="BannerBox" IsVisible="{Binding HasBanner}"
+                VerticalOptions="End" HorizontalOptions="Center" Margin="0,0,0,18"
+                Padding="20,12" StrokeShape="RoundRectangle 22" BackgroundColor="#F2232640">
+            <Label Text="{Binding Banner}" FontFamily="OpenSansSemibold" />
+        </Border>
+    </Grid>
+</ContentPage>

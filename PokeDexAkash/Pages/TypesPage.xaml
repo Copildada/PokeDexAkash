@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:PokeDexAkash.ViewModels"
+             xmlns:controls="clr-namespace:PokeDexAkash.Controls"
+             xmlns:helpers="clr-namespace:PokeDexAkash.Helpers"
+             x:Class="PokeDexAkash.Pages.TypesPage"
+             x:DataType="vm:TypesViewModel"
+             Shell.NavBarIsVisible="False">
+
+    <ContentPage.Resources>
+        <DataTemplate x:Key="PillTemplate" x:DataType="helpers:TypePill">
+            <Border BackgroundColor="{Binding Fill}" StrokeShape="RoundRectangle 15"
+                    Padding="13,6" Margin="0,0,8,8">
+                <Label Text="{Binding Name}" TextColor="{Binding TextColor}"
+                       FontFamily="OpenSansSemibold" FontSize="13" />
+            </Border>
+        </DataTemplate>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20,14,20,28" Spacing="6">
+            <Label Text="Type chart" Style="{StaticResource Heading}" />
+            <Label Text="Pick a type to see how it attacks and defends" Style="{StaticResource Muted}" Margin="0,0,0,10" />
+
+            <FlexLayout Wrap="Wrap" BindableLayout.ItemsSource="{Binding Chips}">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="vm:ChipVM">
+                        <controls:ChipView />
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </FlexLayout>
+
+            <!-- Hero card for the selected type -->
+            <Border x:Name="HeroCard" Margin="0,8,0,4" Padding="22,20"
+                    StrokeShape="RoundRectangle 28" Background="{Binding HeroBrush}">
+                <Grid ColumnDefinitions="*,Auto">
+                    <Image Grid.ColumnSpan="2" Source="pokeball_wm.png" Opacity="0.14"
+                           WidthRequest="150" HeightRequest="150"
+                           HorizontalOptions="End" VerticalOptions="Center" Margin="0,0,-36,0" />
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="{Binding Selected}" FontFamily="OpenSansSemibold" FontSize="30" TextColor="White" />
+                        <Label Text="{Binding CountText}" TextColor="#D9FFFFFF" />
+                        <Label Text="{Binding WeatherText}" TextColor="#D9FFFFFF" FontSize="12" />
+                    </VerticalStackLayout>
+                    <Button Grid.Column="1" Text="Browse"
+                            Command="{Binding BrowseCommand}"
+                            BackgroundColor="#33FFFFFF" VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <VerticalStackLayout x:Name="GroupsHost" BindableLayout.ItemsSource="{Binding Groups}">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="vm:PillGroup">
+                        <VerticalStackLayout>
+                            <Label Text="{Binding Title}" Style="{StaticResource SectionTitle}" />
+                            <FlexLayout Wrap="Wrap"
+                                        BindableLayout.ItemsSource="{Binding Items}"
+                                        BindableLayout.ItemTemplate="{StaticResource PillTemplate}" />
+                        </VerticalStackLayout>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

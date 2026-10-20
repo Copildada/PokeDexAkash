@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="PokeDexAkash.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:pages="clr-namespace:PokeDexAkash.Pages"
+    Shell.FlyoutBehavior="Disabled"
+    Shell.NavBarIsVisible="False"
+    Title="PokéDex GO">
+
+    <TabBar>
+        <ShellContent Title="Pokédex" Icon="tab_dex.png" Route="main"
+                      ContentTemplate="{DataTemplate pages:MainPage}" />
+        <ShellContent Title="Types" Icon="tab_types.png" Route="types"
+                      ContentTemplate="{DataTemplate pages:TypesPage}" />
+        <ShellContent Title="Favorites" Icon="tab_fav.png" Route="favorites"
+                      ContentTemplate="{DataTemplate pages:FavoritesPage}" />
+    </TabBar>
+
+</Shell>

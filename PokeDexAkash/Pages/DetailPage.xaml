@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:PokeDexAkash.ViewModels"
+             xmlns:controls="clr-namespace:PokeDexAkash.Controls"
+             xmlns:helpers="clr-namespace:PokeDexAkash.Helpers"
+             x:Class="PokeDexAkash.Pages.DetailPage"
+             x:DataType="vm:DetailViewModel"
+             Shell.NavBarIsVisible="False"
+             Shell.TabBarIsVisible="False">
+
+    <ContentPage.Resources>
+        <DataTemplate x:Key="PillTemplate" x:DataType="helpers:TypePill">
+            <Border BackgroundColor="{Binding Fill}" StrokeShape="RoundRectangle 15"
+                    Padding="13,6" Margin="0,0,8,8">
+                <Label Text="{Binding Name}" TextColor="{Binding TextColor}"
+                       FontFamily="OpenSansSemibold" FontSize="13" />
+            </Border>
+        </DataTemplate>
+
+        <Style x:Key="InfoValue" TargetType="Label">
+            <Setter Property="FontFamily" Value="OpenSansSemibold" />
+            <Setter Property="FontSize" Value="17" />
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid>
+        <ScrollView x:Name="Scroller">
+            <VerticalStackLayout>
+
+                <!-- ============ HERO ============ -->
+                <Grid HeightRequest="340" Background="{Binding HeroBrush}">
+                    <Image x:Name="Spinner" Source="pokeball_wm.png" Opacity="0.13"
+                           WidthRequest="320" HeightRequest="320"
+                           HorizontalOptions="End" VerticalOptions="End"
+                           Margin="0,0,-90,-50" InputTransparent="True" />
+                    <Label Text="{Binding DexLabel}" FontFamily="OpenSansSemibold"
+                           FontSize="72" TextColor="White" Opacity="0.12"
+                           HorizontalOptions="Start" VerticalOptions="End"
+                           Margin="14,0,0,36" InputTransparent="True" />
+                    <Image x:Name="HeroImage" Source="{Binding HeroImage}"
+                           WidthRequest="250" HeightRequest="250"
+                           HorizontalOptions="Center" VerticalOptions="End"
+                           Margin="0,0,0,46" Aspect="AspectFit" />
+                </Grid>
+
+                <!-- ============ SHEET ============ -->
+                <Border x:Name="Sheet" Margin="0,-32,0,0" Padding="20,26,20,40"
+                        BackgroundColor="{StaticResource Bg}"
+                        StrokeShape="RoundRectangle 32,32,0,0">
+                    <VerticalStackLayout Spacing="6">
+
+                        <!-- Identity -->
+                        <Label Text="{Binding Name}" FontFamily="OpenSansSemibold" FontSize="30"
+                               HorizontalOptions="Center" HorizontalTextAlignment="Center" />
+                        <Label Text="{Binding Genus}" Style="{StaticResource Muted}"
+                               HorizontalOptions="Center" />
+                        <FlexLayout Wrap="Wrap" JustifyContent="Center" Margin="0,8,0,0"
+                                    BindableLayout.ItemsSource="{Binding Types}"
+                                    BindableLayout.ItemTemplate="{StaticResource PillTemplate}" />
+                        <FlexLayout Wrap="Wrap" JustifyContent="Center" IsVisible="{Binding HasBadges}"
+                                    BindableLayout.ItemsSource="{Binding Badges}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="x:String">
+                                    <Border Padding="12,4" Margin="0,0,8,6" StrokeShape="RoundRectangle 12"
+                                            BackgroundColor="#33FFC94D">
+                                        <Label Text="{Binding .}" TextColor="{StaticResource Gold}"
+                                               FontFamily="OpenSansSemibold" FontSize="12" />
+                                    </Border>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </FlexLayout>
+
+                        <!-- Forms -->
+                        <VerticalStackLayout IsVisible="{Binding HasForms}" Margin="0,10,0,0">
+                            <Label Text="FORMS" Style="{StaticResource Muted}" CharacterSpacing="1.5" Margin="0,0,0,6" />
+                            <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never">
+                                <HorizontalStackLayout BindableLayout.ItemsSource="{Binding FormChips}">
+                                    <BindableLayout.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:ChipVM">
+                                            <controls:ChipView />
+                                        </DataTemplate>
+                                    </BindableLayout.ItemTemplate>
+                                </HorizontalStackLayout>
+                            </ScrollView>
+                        </VerticalStackLayout>
+
+                        <!-- Tabs -->
+                        <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never" Margin="0,12,0,4">
+                            <HorizontalStackLayout BindableLayout.ItemsSource="{Binding TabChips}">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:ChipVM">
+                                        <controls:ChipView />
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </HorizontalStackLayout>
+                        </ScrollView>
+
+                        <!-- ========= ABOUT ========= -->
+                        <VerticalStackLayout x:Name="AboutSection" IsVisible="{Binding IsAbout}" Spacing="12">
+                            <Border Padding="18,16" BackgroundColor="{StaticResource Surface}" StrokeShape="RoundRectangle 20">
+                                <Label Text="{Binding Flavor}" LineHeight="1.3" TextColor="#D5D8E8" />
+                            </Border>
+
+                            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
+                                <Border Padding="14,12" BackgroundColor="{StaticResource Surface}" StrokeShape="RoundRectangle 18">
+                                    <VerticalStackLayout>
+                                        <Label Text="HEIGHT" Style="{StaticResource Muted}" CharacterSpacing="1" />
+                                        <Label Text="{Binding Height}" Style="{StaticResource InfoValue}" />
+                                    </VerticalStackLayout>
+                                </Border>
+                                <Border Grid.Column="1" Padding="14,12" BackgroundColor="{StaticResource Surface}" StrokeShape="RoundRectangle 18">
+                                    <VerticalStackLayout>
+                                        <Label Text="WEIGHT" Style="{StaticResource Muted}" CharacterSpacing="1" />
+                                        <Label Text="{Binding Weight}" Style="{StaticResource InfoValue}" />
+                                    </VerticalStackLayout>
+                                </Border>
+                                <Border Grid.Column="2" Padding="14,12" BackgroundColor="{StaticResource Surface}" StrokeShape="RoundRectangle 18">
+                                    <VerticalStackLayout>
+                                        <Label Text="ORIGIN" Style="{StaticResource Muted}" CharacterSpacing="1" />
+                                        <Label Text="{Binding Generation}" Style="{StaticResource InfoValue}" FontSize="14" />
+                                    </VerticalStackLayout>
+                                </Border>
+                            </Grid>
+
+                            <Label Text="Max CP (perfect IVs)" Style="{StaticResource SectionTitle}" />
+                            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
+                                <Border Padding="12,14" StrokeShape="RoundRectangle 18" BackgroundColor="{StaticResource Surface}">
+                                    <VerticalStackLayout HorizontalOptions="Center">
+                                        <Label Text="{Binding Cp40}" FontFamily="OpenSansSemibold" FontSize="20" HorizontalOptions="Center" />
+                                        <Label Text="Level 40" Style="{StaticResource Muted}" HorizontalOptions="Center" />
+                                    </VerticalStackLayout>
+                                </Border>
+                                <Border Grid.Column="1" Padding="12,14" StrokeShape="RoundRectangle 18" BackgroundColor="{StaticResource Surface}">
+                                    <VerticalStackLayout HorizontalOptions="Center">
+                                        <Label Text="{Binding Cp50}" FontFamily="OpenSansSemibold" FontSize="20" HorizontalOptions="Center" />
+                                        <Label Text="Level 50" Style="{StaticResource Muted}" HorizontalOptions="Center" />
+                                    </VerticalStackLayout>
+                                </Border>
+                                <Border Grid.Column="2" Padding="12,14" StrokeShape="RoundRectangle 18" BackgroundColor="{StaticResource Surface}">
+                                    <VerticalStackLayout HorizontalOptions="Center">
+                                        <Label Text="{Binding Cp51}" FontFamily="OpenSansSemibold" FontSize="20" HorizontalOptions="Center" />
+                                        <Label Text="Level 51" Style="{StaticResource Muted}" HorizontalOptions="Center" />
+                                    </VerticalStackLayout>
+                                </Border>
+                            </Grid>
+
+                            <Label Text="Normal vs Shiny" Style="{StaticResource SectionTitle}" />
+                            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                                <Border Padding="8" StrokeShape="RoundRectangle 20" BackgroundColor="{StaticResource Surface}">
+                                    <VerticalStackLayout>
+                                        <Image Source="{Binding NormalPreview}" HeightRequest="130" Aspect="AspectFit" />
+                                        <Label Text="Normal" Style="{StaticResource Muted}" HorizontalOptions="Center" />
+                                    </VerticalStackLayout>
+                                </Border>
+                                <Border Grid.Column="1" Padding="8" StrokeShape="RoundRectangle 20" BackgroundColor="{StaticResource Surface}">
+                                    <VerticalStackLayout>
+                                        <Image Source="{Binding ShinyPreview}" HeightRequest="130" Aspect="AspectFit" />
+                                        <Label Text="✨ Shiny" TextColor="{StaticResource Gold}" FontSize="12" HorizontalOptions="Center" />
+                                    </VerticalStackLayout>
+                                </Border>
+                            </Grid>
+                        </VerticalStackLayout>
+
+                        <!-- ========= STATS ========= -->
+                        <VerticalStackLayout x:Name="StatsSection" IsVisible="{Binding IsStats}" Spacing="16" Padding="0,10,0,0">
+                            <Grid ColumnDefinitions="84,48,*" ColumnSpacing="10">
+                                <Label Text="Attack" VerticalOptions="Center" TextColor="{StaticResource TextMuted}" />
+                                <Label Grid.Column="1" Text="{Binding Attack}" FontFamily="OpenSansSemibold" VerticalOptions="Center" />
+                                <controls:StatBar Grid.Column="2" Value="{Binding AttackRatio}" BarColor="#FF6B6B" VerticalOptions="Center" />
+                            </Grid>
+                            <Grid ColumnDefinitions="84,48,*" ColumnSpacing="10">
+                                <Label Text="Defense" VerticalOptions="Center" TextColor="{StaticResource TextMuted}" />
+                                <Label Grid.Column="1" Text="{Binding Defense}" FontFamily="OpenSansSemibold" VerticalOptions="Center" />
+                                <controls:StatBar Grid.Column="2" Value="{Binding DefenseRatio}" BarColor="#4C8DFF" VerticalOptions="Center" />
+                            </Grid>
+                            <Grid ColumnDefinitions="84,48,*" ColumnSpacing="10">
+                                <Label Text="Stamina" VerticalOptions="Center" TextColor="{StaticResource TextMuted}" />
+                                <Label Grid.Column="1" Text="{Binding Stamina}" FontFamily="OpenSansSemibold" VerticalOptions="Center" />
+                                <controls:StatBar Grid.Column="2" Value="{Binding StaminaRatio}" BarColor="#4CD964" VerticalOptions="Center" />
+                            </Grid>
+                            <Label Text="Bars compare against the strongest Pokémon in Pokémon GO." Style="{StaticResource Muted}" />
+                        </VerticalStackLayout>
+
+                        <!-- ========= MOVES ========= -->
+                        <VerticalStackLayout x:Name="MovesSection" IsVisible="{Binding IsMoves}">
+                            <Label Text="⚡ Fast moves" Style="{StaticResource SectionTitle}" />
+                            <VerticalStackLayout BindableLayout.ItemsSource="{Binding FastMoves}">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:MoveRow">
+                                        <Border Padding="14,12" Margin="0,0,0,8" StrokeShape="RoundRectangle 16"
+                                                BackgroundColor="{StaticResource Surface}">
+                                            <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="12">
+                                                <Border BackgroundColor="{Binding Pill.Fill}" WidthRequest="12" HeightRequest="12"
+                                                        StrokeShape="RoundRectangle 6" VerticalOptions="Start" Margin="0,5,0,0" />
+                                                <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                                    <HorizontalStackLayout Spacing="8">
+                                                        <Label Text="{Binding Name}" FontFamily="OpenSansSemibold" />
+                                                        <Border IsVisible="{Binding IsElite}" Padding="8,2" StrokeShape="RoundRectangle 8"
+                                                                BackgroundColor="#33FFC94D" VerticalOptions="Center">
+                                                            <Label Text="ELITE TM" FontSize="9" TextColor="{StaticResource Gold}" FontFamily="OpenSansSemibold" />
+                                                        </Border>
+                                                    </HorizontalStackLayout>
+                                                    <Label Text="{Binding PveLine}" Style="{StaticResource Muted}" />
+                                                    <Label Text="{Binding PvpLine}" Style="{StaticResource Muted}" />
+                                                </VerticalStackLayout>
+                                                <VerticalStackLayout Grid.Column="2">
+                                                    <Label Text="{Binding Dps}" FontFamily="OpenSansSemibold" FontSize="18" HorizontalTextAlignment="End" />
+                                                    <Label Text="DPS" Style="{StaticResource Muted}" HorizontalTextAlignment="End" />
+                                                </VerticalStackLayout>
+                                                <controls:StatBar Grid.Row="1" Grid.ColumnSpan="3" Margin="0,10,0,0"
+                                                                  Value="{Binding Ratio}" BarColor="{Binding Pill.Fill}" />
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </VerticalStackLayout>
+
+                            <Label Text="💥 Charged moves" Style="{StaticResource SectionTitle}" />
+                            <VerticalStackLayout BindableLayout.ItemsSource="{Binding ChargedMoves}">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:MoveRow">
+                                        <Border Padding="14,12" Margin="0,0,0,8" StrokeShape="RoundRectangle 16"
+                                                BackgroundColor="{StaticResource Surface}">
+                                            <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="12">
+                                                <Border BackgroundColor="{Binding Pill.Fill}" WidthRequest="12" HeightRequest="12"
+                                                        StrokeShape="RoundRectangle 6" VerticalOptions="Start" Margin="0,5,0,0" />
+                                                <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                                    <HorizontalStackLayout Spacing="8">
+                                                        <Label Text="{Binding Name}" FontFamily="OpenSansSemibold" />
+                                                        <Border IsVisible="{Binding IsElite}" Padding="8,2" StrokeShape="RoundRectangle 8"
+                                                                BackgroundColor="#33FFC94D" VerticalOptions="Center">
+                                                            <Label Text="ELITE TM" FontSize="9" TextColor="{StaticResource Gold}" FontFamily="OpenSansSemibold" />
+                                                        </Border>
+                                                    </HorizontalStackLayout>
+                                                    <Label Text="{Binding PveLine}" Style="{StaticResource Muted}" />
+                                                    <Label Text="{Binding PvpLine}" Style="{StaticResource Muted}" />
+                                                </VerticalStackLayout>
+                                                <VerticalStackLayout Grid.Column="2">
+                                                    <Label Text="{Binding Dps}" FontFamily="OpenSansSemibold" FontSize="18" HorizontalTextAlignment="End" />
+                                                    <Label Text="DPS" Style="{StaticResource Muted}" HorizontalTextAlignment="End" />
+                                                </VerticalStackLayout>
+                                                <controls:StatBar Grid.Row="1" Grid.ColumnSpan="3" Margin="0,10,0,0"
+                                                                  Value="{Binding Ratio}" BarColor="{Binding Pill.Fill}" />
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+
+                        <!-- ========= MATCHUPS ========= -->
+                        <VerticalStackLayout x:Name="MatchupsSection" IsVisible="{Binding IsMatchups}">
+                            <VerticalStackLayout BindableLayout.ItemsSource="{Binding Groups}">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:PillGroup">
+                                        <VerticalStackLayout>
+                                            <Label Text="{Binding Title}" Style="{StaticResource SectionTitle}" />
+                                            <FlexLayout Wrap="Wrap"
+                                                        BindableLayout.ItemsSource="{Binding Items}"
+                                                        BindableLayout.ItemTemplate="{StaticResource PillTemplate}" />
+                                        </VerticalStackLayout>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </VerticalStackLayout>
+                            <Label Text="{Binding WeatherText, StringFormat='🌤️  Weather boost:  {0}'}"
+                                   Style="{StaticResource Muted}" Margin="0,16,0,0" />
+                        </VerticalStackLayout>
+
+                        <!-- ========= EVOLUTION ========= -->
+                        <VerticalStackLayout x:Name="EvolutionSection" IsVisible="{Binding IsEvolution}" Spacing="10" Padding="0,10,0,0">
+                            <Label IsVisible="{Binding NoEvolutions}"
+                                   Text="This Pokémon doesn't evolve."
+                                   Style="{StaticResource Muted}" />
+                            <VerticalStackLayout Spacing="10" BindableLayout.ItemsSource="{Binding Evolutions}">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:EvoRow">
+                                        <Border Padding="12" StrokeShape="RoundRectangle 20" BackgroundColor="{StaticResource Surface}">
+                                            <Grid ColumnDefinitions="*,Auto,*" ColumnSpacing="6">
+                                                <VerticalStackLayout HorizontalOptions="Center">
+                                                    <Image Source="{Binding FromImage}" WidthRequest="76" HeightRequest="76" />
+                                                    <Label Text="{Binding FromName}" FontSize="13" HorizontalOptions="Center" />
+                                                    <VerticalStackLayout.GestureRecognizers>
+                                                        <TapGestureRecognizer Command="{Binding OpenFrom}" />
+                                                    </VerticalStackLayout.GestureRecognizers>
+                                                </VerticalStackLayout>
+                                                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" MaximumWidthRequest="110" Spacing="2">
+                                                    <Label Text="➜" FontSize="22" HorizontalOptions="Center" TextColor="{StaticResource Accent}" />
+                                                    <Label Text="{Binding Cost}" FontSize="10" HorizontalTextAlignment="Center"
+                                                           TextColor="{StaticResource TextMuted}" />
+                                                </VerticalStackLayout>
+                                                <VerticalStackLayout Grid.Column="2" HorizontalOptions="Center">
+                                                    <Image Source="{Binding ToImage}" WidthRequest="76" HeightRequest="76" />
+                                                    <Label Text="{Binding ToName}" FontSize="13" HorizontalOptions="Center" />
+                                                    <VerticalStackLayout.GestureRecognizers>
+                                                        <TapGestureRecognizer Command="{Binding OpenTo}" />
+                                                    </VerticalStackLayout.GestureRecognizers>
+                                                </VerticalStackLayout>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+
+                        <!-- ========= PVP ========= -->
+                        <VerticalStackLayout x:Name="PvpSection" IsVisible="{Binding IsPvp}" Spacing="10" Padding="0,10,0,0">
+                            <ActivityIndicator IsRunning="{Binding PvpLoading}" IsVisible="{Binding PvpLoading}"
+                                               Color="{StaticResource Accent}" HeightRequest="28" />
+                            <VerticalStackLayout Spacing="10" BindableLayout.ItemsSource="{Binding PvpRows}">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:PvpRow">
+                                        <Border Padding="16,14" StrokeShape="RoundRectangle 20" BackgroundColor="{StaticResource Surface}">
+                                            <VerticalStackLayout Spacing="8">
+                                                <Grid ColumnDefinitions="*,Auto">
+                                                    <Label Text="{Binding League}" FontFamily="OpenSansSemibold" TextColor="{Binding Accent}" VerticalOptions="Center" />
+                                                    <Label Grid.Column="1" Text="{Binding Rank}" IsVisible="{Binding HasData}"
+                                                           FontFamily="OpenSansSemibold" FontSize="22" />
+                                                </Grid>
+                                                <Label IsVisible="{Binding NoData}" Text="Not ranked in this league"
+                                                       Style="{StaticResource Muted}" />
+                                                <VerticalStackLayout IsVisible="{Binding HasData}" Spacing="10">
+                                                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                                                        <controls:StatBar Value="{Binding Ratio}" BarColor="{Binding Accent}" VerticalOptions="Center" />
+                                                        <Label Grid.Column="1" Text="{Binding Score}" FontFamily="OpenSansSemibold" />
+                                                    </Grid>
+                                                    <Label Text="BEST MOVESET" Style="{StaticResource Muted}" CharacterSpacing="1.5" />
+                                                    <FlexLayout Wrap="Wrap"
+                                                                BindableLayout.ItemsSource="{Binding Moves}"
+                                                                BindableLayout.ItemTemplate="{StaticResource PillTemplate}" />
+                                                    <Label Text="{Binding StatLine}" Style="{StaticResource Muted}" />
+                                                    <Label Text="{Binding Notes}" FontSize="13" TextColor="#C5C9DD" LineHeight="1.25" />
+                                                </VerticalStackLayout>
+                                            </VerticalStackLayout>
+                                        </Border>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </VerticalStackLayout>
+                            <Label Text="Rankings courtesy of PvPoke." Style="{StaticResource Muted}" />
+                        </VerticalStackLayout>
+
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- ============ FLOATING ACTIONS ============ -->
+        <Grid x:Name="TopBar" VerticalOptions="Start" Padding="16,14,16,0" ColumnDefinitions="Auto,*,Auto,Auto,Auto" ColumnSpacing="10">
+            <Border x:Name="BackButton" WidthRequest="44" HeightRequest="44" StrokeShape="RoundRectangle 22" BackgroundColor="#59000000">
+                <Label Text="←" FontSize="22" HorizontalOptions="Center" VerticalOptions="Center" TextColor="White" />
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnBack" />
+                </Border.GestureRecognizers>
+            </Border>
+
+            <Border Grid.Column="2" WidthRequest="44" HeightRequest="44" StrokeShape="RoundRectangle 22" BackgroundColor="#59000000">
+                <Label Text="🔊" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center" />
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding PlayCryCommand}" Tapped="OnActionTapped" />
+                </Border.GestureRecognizers>
+            </Border>
+
+            <Border Grid.Column="3" WidthRequest="44" HeightRequest="44" StrokeShape="RoundRectangle 22" BackgroundColor="#59000000">
+                <Label Text="{Binding ShinyGlyph}" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center" />
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding ToggleShinyCommand}" Tapped="OnActionTapped" />
+                </Border.GestureRecognizers>
+            </Border>
+
+            <Border Grid.Column="4" WidthRequest="44" HeightRequest="44" StrokeShape="RoundRectangle 22" BackgroundColor="#59000000">
+                <Label Text="{Binding Heart}" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center" />
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding ToggleFavoriteCommand}" Tapped="OnActionTapped" />
+                </Border.GestureRecognizers>
+            </Border>
+        </Grid>
+    </Grid>
+</ContentPage>

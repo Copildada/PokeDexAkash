@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:PokeDexAkash.ViewModels"
+             xmlns:controls="clr-namespace:PokeDexAkash.Controls"
+             x:Class="PokeDexAkash.Pages.FavoritesPage"
+             x:DataType="vm:FavoritesViewModel"
+             Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto,*">
+        <VerticalStackLayout Padding="20,14,20,10">
+            <Label Text="Favorites" Style="{StaticResource Heading}" />
+            <Label Text="{Binding Subtitle}" Style="{StaticResource Muted}" />
+        </VerticalStackLayout>
+
+        <CollectionView Grid.Row="1" ItemsSource="{Binding Items}"
+                        ItemSizingStrategy="MeasureFirstItem" Margin="8,0">
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical" Span="2" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="vm:PokemonCardVM">
+                    <controls:PokemonCard />
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            <CollectionView.EmptyView>
+                <VerticalStackLayout Padding="40,90" Spacing="12" HorizontalOptions="Center">
+                    <Image x:Name="EmptyBall" Source="pokeball.png" WidthRequest="96" HeightRequest="96" Opacity="0.85" />
+                    <Label Text="No favorites yet" FontFamily="OpenSansSemibold" FontSize="18" HorizontalOptions="Center" />
+                    <Label Text="Tap the 🤍 on any Pokémon to keep it here."
+                           Style="{StaticResource Muted}" HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+            <CollectionView.Footer>
+                <BoxView HeightRequest="12" Color="Transparent" />
+            </CollectionView.Footer>
+        </CollectionView>
+    </Grid>
+</ContentPage>

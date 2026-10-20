@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PokeDexAkash.Pages.LoadingPage"
+             BackgroundColor="#0E0F1A"
+             Shell.NavBarIsVisible="False">
+    <Grid x:Name="Body" RowDefinitions="*,Auto,*" Padding="36,0">
+        <VerticalStackLayout Grid.Row="1" Spacing="22" HorizontalOptions="Fill">
+            <Grid HeightRequest="150" WidthRequest="150" HorizontalOptions="Center">
+                <Image x:Name="Ball" Source="pokeball.png" Aspect="AspectFit" />
+            </Grid>
+
+            <VerticalStackLayout Spacing="2">
+                <Label Text="PokéDex GO"
+                       Style="{StaticResource Heading}"
+                       HorizontalOptions="Center" />
+                <Label x:Name="Tip"
+                       Text="Powered by PokéAPI · PvPoke · Pokémon GO API"
+                       Style="{StaticResource Muted}"
+                       HorizontalOptions="Center" />
+            </VerticalStackLayout>
+
+            <ProgressBar x:Name="Bar" Progress="0" ProgressColor="{StaticResource Accent}" />
+            <Label x:Name="Status" Text="Warming up…" HorizontalOptions="Center"
+                   TextColor="{StaticResource TextMuted}" />
+
+            <Button x:Name="RetryButton" Text="Try again" IsVisible="False"
+                    HorizontalOptions="Center" Clicked="OnRetry" />
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:PokeDexAkash.ViewModels"
+             xmlns:helpers="clr-namespace:PokeDexAkash.Helpers"
+             x:Class="PokeDexAkash.Controls.PokemonCard"
+             x:DataType="vm:PokemonCardVM">
+    <Grid Margin="6" HeightRequest="172">
+        <Border x:Name="Root"
+                StrokeShape="RoundRectangle 26"
+                Background="{Binding CardBrush}">
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnTapped" />
+            </Border.GestureRecognizers>
+            <Grid>
+                <!-- decorative watermark -->
+                <Image Source="pokeball_wm.png"
+                       Opacity="0.16"
+                       WidthRequest="130" HeightRequest="130"
+                       HorizontalOptions="End" VerticalOptions="End"
+                       Margin="0,0,-30,-30"
+                       InputTransparent="True" />
+
+                <Label Text="{Binding DexLabel}"
+                       FontFamily="OpenSansSemibold"
+                       FontSize="13"
+                       TextColor="#B3FFFFFF"
+                       HorizontalOptions="End" VerticalOptions="Start"
+                       Margin="0,14,16,0" />
+
+                <VerticalStackLayout VerticalOptions="End" HorizontalOptions="Start" Padding="16,0,0,16" Spacing="6">
+                    <Label Text="{Binding Name}"
+                           FontFamily="OpenSansSemibold"
+                           FontSize="16"
+                           TextColor="White"
+                           LineBreakMode="TailTruncation"
+                           MaximumWidthRequest="104" />
+                    <VerticalStackLayout Spacing="4" BindableLayout.ItemsSource="{Binding Types}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="helpers:TypePill">
+                                <Border BackgroundColor="#40FFFFFF" StrokeShape="RoundRectangle 10"
+                                        Padding="10,3" HorizontalOptions="Start">
+                                    <Label Text="{Binding Name}" TextColor="White" FontSize="11" FontFamily="OpenSansSemibold" />
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+
+                <Image Source="{Binding Image}"
+                       WidthRequest="112" HeightRequest="112"
+                       HorizontalOptions="End" VerticalOptions="End"
+                       Margin="0,0,8,6"
+                       Aspect="AspectFit"
+                       InputTransparent="True" />
+            </Grid>
+        </Border>
+
+        <!-- Favorite heart: sibling of the tappable card so the two taps never clash -->
+        <Label Text="{Binding Heart}"
+               FontSize="20"
+               Padding="14,12,12,12"
+               HorizontalOptions="Start" VerticalOptions="Start">
+            <Label.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding ToggleFavoriteCommand}" Tapped="OnHeartTapped" />
+            </Label.GestureRecognizers>
+        </Label>
+    </Grid>
+</ContentView>
